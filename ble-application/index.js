@@ -10,10 +10,7 @@ bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
 
   if (state === 'poweredOn') {
-    bleno.startAdvertising('Revvy BLE Node', [
-      systemInformationService.uuid,
-      uartService.uuid
-    ]);
+    bleno.startAdvertising('Revvy BLE Node', [ uartService.uuid ]);
   }
   else {
     bleno.stopAdvertising();
@@ -27,7 +24,8 @@ bleno.on('advertisingStart', function(error) {
 
   if (!error) {
     bleno.setServices([
-      systemInformationService
+      systemInformationService,
+      uartService
     ]);
   }
 });
