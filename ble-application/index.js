@@ -1,4 +1,5 @@
 var bleno = require('bleno');
+var os = require('os');
 
 var SystemInformationService = require('./services/systeminformationservice');
 var UartService = require('./services/uartservice');
@@ -10,7 +11,7 @@ bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
 
   if (state === 'poweredOn') {
-    bleno.startAdvertising('Revvy BLE Node', [ uartService.uuid ]);
+    bleno.startAdvertising(os.hostname(), [ uartService.uuid ]);
   }
   else {
     bleno.stopAdvertising();
