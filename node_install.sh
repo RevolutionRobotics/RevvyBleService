@@ -1,8 +1,8 @@
 #!/bin/bash
 
 sudo apt-get update && sudo apt-get upgrade
-wget http://node-arm.herokuapp.com/node_latest_armhf.deb
-sudo dpkg -i node_latest_armhf.deb
+wget -O - https://raw.githubusercontent.com/audstanley/NodeJs-Raspberry-Pi/master/Install-Node.sh | sudo bash
+sudo node-install -v 8.11.3
 
 node -v
 npm -v
