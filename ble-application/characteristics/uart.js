@@ -14,6 +14,7 @@ var UartCharacteristic = function(port) {
   });
 
  this._port = port;
+ this._rawData = '';
  this._blocklyList = [];
  this._value = new Buffer(0);
 };
@@ -32,7 +33,7 @@ UartCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
       this._port.write(data);
       break;
     case 0xfe:
-      this.readSyncedData(data.slice(1));
+      this.readSyncedPacket(data.slice(1));
       break;
     default:
       console.warn('Error: Unknown header');
@@ -41,9 +42,18 @@ UartCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
   callback(this.RESULT_SUCCESS, withoutResponse ? null : this._value);
 };
 
-UartCharacteristic.prototype.readSyncedData = function(data) {
-  var decoded = decodeURIComponent(String(data));
-  this._blocklyList = JSON.parse(decoded);
+UartCharacteristic.prototype.readSyncedPacket = function(data) {
+  var isFinalPacket = !!data[0];
+  this._rawData += String(data.slice(1));
+
+  if (isFinalPacket) {
+    var decoded = decodeURIComponent(this._rawData);
+    
+    this._blocklyList = JSON.parse(decoded);
+    this._rawData = '';
+
+    console.log(this._blocklyList);
+  }
 };
 
 util.inherits(UartCharacteristic, BlenoCharacteristic);
